@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { RedisModule } from './datasource/redis/redis.module';
 import { ConfigModule } from '@nestjs/config';
 import { UrlModule } from './modules/url/url.module';
+import { PostgresModule } from './datasource/postgres/postgres.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { UrlModule } from './modules/url/url.module';
     }),
     RedisModule,
     UrlModule,
+    PostgresModule,
   ],
   controllers: [AppController],
   providers: [AppService],
