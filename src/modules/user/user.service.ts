@@ -152,6 +152,34 @@ export class UserService {
     }
   }
 
+  async getUser(id: string) {
+
+    const userId = await this.prisma.user.findUnique({ where: { id } });
+    if (!userId) {
+      throw new NotFoundException('User Not Found!');
+    }
+
+    return {
+      message: "User details fetched",
+      user: this.sanitiseUser(userId)
+    }
+
+  }
+
+  async deleteUser(id: string) {
+
+    const userId = await this.prisma.user.findUnique({ where: { id } });
+    if (!userId) {
+      throw new NotFoundException('User Not Found!');
+    }
+    await this.prisma.user.delete({ where: { id } })
+
+    return {
+      message: "User deleted successfully.",
+    }
+
+  }
+
   // ---------------------------------------------------------------------------
   // Private helpers
   // ---------------------------------------------------------------------------

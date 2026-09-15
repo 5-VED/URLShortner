@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Put, Query } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginDto } from './dto/login-user.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
@@ -37,12 +37,16 @@ export class UserController {
   @HttpCode(HttpStatus.OK)
   async updateUser() { }
 
-  @Get()
+  @Get(':id')
   @HttpCode(HttpStatus.OK)
-  async getUser() { }
+  async getUser(@Query() id: string) {
+    return this.userService.getUser(id);
+  }
 
   @Delete()
   @HttpCode(HttpStatus.OK)
-  async deleteUser() { }
+  async deleteUser(@Query() id: string) {
+    return this.userService.deleteUser(id);
+  }
 }
 
