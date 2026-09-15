@@ -30,4 +30,4 @@ import { RedisModule } from '../../datasource/redis/redis.module';
   // Export JwtModule in case other modules (e.g., auth guards) need JwtService
   exports: [JwtModule],
 })
-export class UserModule {}
+export class UserModule { }
