@@ -11,12 +11,17 @@ export class PrismaService
   private readonly logger = new Logger(PrismaService.name);
 
   constructor(configService: ConfigService) {
-    const connectionString = configService.get<string>('DATABASE_URL');
+    const host = configService.get<string>('POSTGRES_HOST');
+    const port = configService.get<string>('POSTGRES_PORT', '5432');
+    const username = configService.get<string>('POSTGRES_USERNAME');
+    const password = configService.get<string>('POSTGRES_PASSWORD');
+    const database = configService.get<string>('POSTGRES_NAME');
 
-    if (!connectionString) {
-      throw new Error('DATABASE_URL is not configured');
+    if (!host || !username || !password || !database) {
+      throw new Error('PostgreSQL configuration is incomplete');
     }
 
+    const connectionString = `postgresql://${encodeURIComponent(username)}:${encodeURIComponent(password)}@${host}:${port}/${database}`;
     const adapter = new PrismaPg({ connectionString });
     super({ adapter });
   }
