@@ -2,15 +2,16 @@ import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Put, 
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginDto } from './dto/login-user.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
-import { UpdateUserDto } from './dto//update-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { DeleteUserDto } from './dto//delete-user.dto';
 import { UserService } from './user.service';
+import { GetUserDto } from './dto/get-user.dto';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) { }
 
-  @Post()
+  @Post("signup")
   @HttpCode(HttpStatus.CREATED)
   async signUp(@Body() createUserDto: CreateUserDto) {
     return this.userService.signUp(createUserDto);
@@ -35,14 +36,16 @@ export class UserController {
     return { message: 'Logged out successfully' };
   }
 
-  @Put()
+  @Put(':id')
   @HttpCode(HttpStatus.OK)
-  async updateUser() { }
+  async updateUser(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    return this.userService.updateUser(id, updateUserDto);
+  }
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  async getUser(@Query() updateUserDto: UpdateUserDto) {
-    return this.userService.getUser(updateUserDto);
+  async getUser(@Query() getUserDto: GetUserDto) {
+    return this.userService.getUser(getUserDto);
   }
 
   @Delete()

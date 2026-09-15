@@ -6,16 +6,16 @@ import {
 } from '@nestjs/common';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '../../../prisma/generated/prisma/client';
-
-const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
-// const prisma = new PrismaClient({ adapter });
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class PrismaService
   extends PrismaClient
-  implements OnModuleInit, OnModuleDestroy
-{
-  constructor() {
+  implements OnModuleInit, OnModuleDestroy {
+  constructor(configService: ConfigService) {
+    const connectionString =
+      configService.getOrThrow<string>('DATABASE_URL');
+    const adapter = new PrismaPg({ connectionString });
     super({ adapter });
   }
 

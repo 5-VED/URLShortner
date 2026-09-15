@@ -14,6 +14,7 @@ async function bootstrap() {
     }),
   );
 
+  // ----------- Seagger Configuration ---------------
   const config = new DocumentBuilder()
     .setTitle('URL Shortener')
     .setDescription('The URL Shortener API description')
@@ -23,6 +24,7 @@ async function bootstrap() {
 
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, documentFactory);
+  // --------------------------------------------------- 
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();
