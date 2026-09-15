@@ -18,6 +18,9 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { LoginDto } from './dto/login-user.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 
+import { UpdateUserDto } from './dto/update-user.dto';
+import { DeleteUserDto } from './dto/delete-user.dto';
+
 import { hashPassword, comparePassword } from '../../../shared/utils/password.util';
 import { generateTokenPair, TokenPayload, TokenPair } from '../../../shared/utils/token.util';
 
@@ -152,9 +155,9 @@ export class UserService {
     }
   }
 
-  async getUser(id: string) {
+  async getUser(dto: UpdateUserDto) {
 
-    const userId = await this.prisma.user.findUnique({ where: { id } });
+    const userId = await this.prisma.user.findUnique({ where: { id: dto.id } });
     if (!userId) {
       throw new NotFoundException('User Not Found!');
     }
@@ -166,13 +169,13 @@ export class UserService {
 
   }
 
-  async deleteUser(id: string) {
+  async deleteUser(dto: DeleteUserDto) {
 
-    const userId = await this.prisma.user.findUnique({ where: { id } });
+    const userId = await this.prisma.user.findUnique({ where: { id: dto.id } });
     if (!userId) {
       throw new NotFoundException('User Not Found!');
     }
-    await this.prisma.user.delete({ where: { id } })
+    await this.prisma.user.delete({ where: { id: dto.id } })
 
     return {
       message: "User deleted successfully.",

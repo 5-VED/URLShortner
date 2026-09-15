@@ -2,6 +2,8 @@ import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Put, 
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginDto } from './dto/login-user.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
+import { UpdateUserDto } from './dto//update-user.dto';
+import { DeleteUserDto } from './dto//delete-user.dto';
 import { UserService } from './user.service';
 
 @Controller('user')
@@ -39,14 +41,14 @@ export class UserController {
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  async getUser(@Query() id: string) {
-    return this.userService.getUser(id);
+  async getUser(@Query() updateUserDto: UpdateUserDto) {
+    return this.userService.getUser(updateUserDto);
   }
 
   @Delete()
   @HttpCode(HttpStatus.OK)
-  async deleteUser(@Query() id: string) {
-    return this.userService.deleteUser(id);
+  async deleteUser(@Query() deleteUserDto: DeleteUserDto) {
+    return this.userService.deleteUser(deleteUserDto);
   }
 }
 
