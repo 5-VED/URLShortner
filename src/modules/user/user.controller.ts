@@ -6,7 +6,7 @@ import { UserService } from './user.service';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -34,12 +34,15 @@ export class UserController {
   }
 
   @Put()
-  async updateUser() {}
+  @HttpCode(HttpStatus.OK)
+  async updateUser() { }
 
   @Get()
-  async getUser() {}
+  @HttpCode(HttpStatus.OK)
+  async getUser() { }
 
   @Delete()
-  async deleteUser() {}
+  @HttpCode(HttpStatus.OK)
+  async deleteUser() { }
 }
 
