@@ -1,20 +1,14 @@
 import {
-  IsString,
   IsEmail,
   IsNotEmpty,
-  MinLength,
-  MaxLength,
+  IsString,
   Matches,
+  MaxLength,
+  MinLength,
 } from 'class-validator';
 import { Transform } from 'class-transformer';
 
-export class CreateUserDto {
-  @IsString()
-  @IsNotEmpty({ message: 'Name is required' })
-  @MinLength(2, { message: 'Name must be at least 2 characters' })
-  @MaxLength(50, { message: 'Name must not exceed 50 characters' })
-  name: string;
-
+export class LoginDto {
   @Transform(({ value }) => (value as string)?.trim().toLowerCase())
   @IsEmail({}, { message: 'Please provide a valid email address' })
   @IsNotEmpty({ message: 'Email is required' })

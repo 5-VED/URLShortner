@@ -5,5 +5,6 @@ import { PrismaService } from './postgres.service';
 @Module({
   controllers: [],
   providers: [PrismaService],
+  exports: [PrismaService],
 })
 export class PostgresModule {}
