@@ -7,4 +7,4 @@ import { PrismaService } from './postgres.service';
   providers: [PrismaService],
   exports: [PrismaService],
 })
-export class PostgresModule {}
+export class PostgresModule { }
