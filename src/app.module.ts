@@ -1,11 +1,10 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { RedisModule } from './datasource/redis/redis.module';
 import { ConfigModule } from '@nestjs/config';
-// import { UrlModule } from './modules/url/url.module';
 import { PostgresModule } from './datasource/postgres/postgres.module';
-import { UserModule } from './modules/user/user.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { TaskModule } from './modules/task/task.module';
 
 @Module({
   imports: [
@@ -13,10 +12,9 @@ import { UserModule } from './modules/user/user.module';
       isGlobal: true,
       envFilePath: '.env',
     }),
-    RedisModule,
-    // UrlModule,
     PostgresModule,
-    UserModule,
+    AuthModule,
+    TaskModule,
   ],
   controllers: [AppController],
   providers: [AppService],
