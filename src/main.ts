@@ -1,20 +1,20 @@
-import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import helmet from 'helmet';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      transform: true,
+  // ----------- Security (Helmet & CORS) -----------
+  app.use(
+    helmet({
+      contentSecurityPolicy: false,
     }),
   );
+  // ------------------------------------------------
 
-  // ----------- Seagger Configuration ---------------
+  // ----------- Swagger Configuration ---------------
   const config = new DocumentBuilder()
     .setTitle('URL Shortener')
     .setDescription('The URL Shortener API description')
@@ -24,7 +24,8 @@ async function bootstrap() {
 
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, documentFactory);
-  // --------------------------------------------------- 
+  // ---------------------------------------------------
+
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

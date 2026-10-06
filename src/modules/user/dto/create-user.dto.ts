@@ -5,20 +5,30 @@ import {
   MinLength,
   MaxLength,
   Matches,
+  IsOptional,
+  IsEnum,
 } from 'class-validator';
 import { Transform } from 'class-transformer';
+import { RoleType } from '../../../common/enums/role.enum';
+
 
 export class CreateUserDto {
   @IsString()
   @IsNotEmpty({ message: 'Name is required' })
   @MinLength(2, { message: 'Name must be at least 2 characters' })
   @MaxLength(50, { message: 'Name must not exceed 50 characters' })
-  name: string;
+  firstName!: string;
+
+  @IsString()
+  @IsNotEmpty({ message: 'Name is required' })
+  @MinLength(2, { message: 'Name must be at least 2 characters' })
+  @MaxLength(50, { message: 'Name must not exceed 50 characters' })
+  lastName!: string;
 
   @Transform(({ value }) => (value as string)?.trim().toLowerCase())
   @IsEmail({}, { message: 'Please provide a valid email address' })
   @IsNotEmpty({ message: 'Email is required' })
-  email: string;
+  email!: string;
 
   @IsString()
   @IsNotEmpty({ message: 'Password is required' })
@@ -28,5 +38,18 @@ export class CreateUserDto {
     message:
       'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character',
   })
-  password: string;
+  password!: string;
+
+  @IsOptional()
+  @IsEnum(RoleType, { message: 'Role must be either user or admin' })
+  role?: RoleType;
+
+  @IsOptional()
+  @IsString()
+  phoneNo?: string;
+
+  @IsOptional()
+  @IsString()
+  profilePic?: string;
 }
+

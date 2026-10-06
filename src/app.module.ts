@@ -3,9 +3,9 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { RedisModule } from './datasource/redis/redis.module';
 import { ConfigModule } from '@nestjs/config';
-// import { UrlModule } from './modules/url/url.module';
 import { PostgresModule } from './datasource/postgres/postgres.module';
 import { UserModule } from './modules/user/user.module';
+import { UrlModule } from './modules/url/url.module';
 
 @Module({
   imports: [
@@ -14,11 +14,11 @@ import { UserModule } from './modules/user/user.module';
       envFilePath: '.env',
     }),
     RedisModule,
-    // UrlModule,
     PostgresModule,
+    UrlModule,
     UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}

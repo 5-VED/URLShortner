@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Post, Req } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { CreateUrlDto } from './dto/create-shorturl';
 import { UrlService } from './url.service';
 
@@ -8,4 +17,17 @@ export class UrlController {
 
   @Get('/:shortCode')
   async getShortCode() { }
+
+  // @Post('')
+  // @HttpCode(HttpStatus.OK)
+  // async createShortCode(
+  //   @Body() createShortUrl: CreateUrlDto,
+  // ) {
+  //   try {
+  //     return await this.urlService.addShortCode(createShortUrl, userId);
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
 }
+

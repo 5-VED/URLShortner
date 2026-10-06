@@ -6,5 +6,5 @@ export interface Url {
   deletedAt: Date | null;
   isDeleted: boolean;
   isActive: boolean;
-  userId: string;
+  userId: string | null;
 }

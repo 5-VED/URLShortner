@@ -11,7 +11,7 @@ describe('UserController', () => {
       providers: [
         {
           provide: UserService,
-          useValue: { signup: jest.fn() },
+          useValue: { createUser: jest.fn() },
         },
       ],
     }).compile();
