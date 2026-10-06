@@ -1,0 +1,12 @@
+model URL {
+  id        String   @id @default(uuid())
+  url       String
+  shortCode String   @unique
+  createdAt DateTime @default(now())  
+  deletedAt DateTime 
+  isDeleted Boolean  @default(false) 
+  isActive Boolean  @default(true) 
+  
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
