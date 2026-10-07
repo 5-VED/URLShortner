@@ -14,10 +14,7 @@ import { LoginDto } from './dto/login-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { GetUserDto } from './dto/get-user.dto';
 import { DeleteUserDto } from './dto/delete-user.dto';
-import {
-  comparePassword,
-  hashPassword,
-} from '../../../shared/utils/password.util';
+import { comparePassword, hashPassword } from '../../utils/password.util';
 import { RoleType } from '../../common/enums/role.enum';
 
 @Injectable()
