@@ -11,18 +11,20 @@ import { PrismaService } from '../../datasource/postgres/postgres.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginDto } from './dto/login-user.dto';
 
-
 import { UpdateUserDto } from './dto/update-user.dto';
 import { GetUserDto } from './dto/get-user.dto';
 import { DeleteUserDto } from './dto/delete-user.dto';
-import { comparePassword, hashPassword } from '../../../shared/utils/password.util';
+import {
+  comparePassword,
+  hashPassword,
+} from '../../../shared/utils/password.util';
 import { RoleType } from '../../common/enums/role.enum';
 
 @Injectable()
 export class UserService {
   private readonly logger = new Logger(UserService.name);
 
-  constructor(private readonly prisma: PrismaService) { }
+  constructor(private readonly prisma: PrismaService) {}
 
   // ---------------------------------------------------------------------------
   // Public API
@@ -33,9 +35,7 @@ export class UserService {
    * - Rejects duplicate emails with 409.
    * - Hashes the password before persisting.
    */
-  async signUp(
-    dto: CreateUserDto,
-  ): Promise<any> {
+  async signUp(dto: CreateUserDto): Promise<any> {
     // 1. Uniqueness check
     const existing = await this.prisma.user.findUnique({
       where: { email: dto.email },
@@ -77,9 +77,7 @@ export class UserService {
    * - Returns 401 for wrong passwords.
    * - Returns a fresh token pair containing the user's role on success.
    */
-  async login(
-    dto: LoginDto,
-  ): Promise<any> {
+  async login(dto: LoginDto): Promise<any> {
     // 1. Look up user by email — include password for bcrypt comparison
     const user = await this.prisma.user.findUnique({
       where: { email: dto.email },
@@ -98,10 +96,12 @@ export class UserService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    this.logger.log(`User logged in: ${user.email} (id=${user.id}, role=${user.role})`);
+    this.logger.log(
+      `User logged in: ${user.email} (id=${user.id}, role=${user.role})`,
+    );
 
     return {
-      user: this.sanitiseUser(user)
+      user: this.sanitiseUser(user),
     };
   }
 
@@ -161,7 +161,10 @@ export class UserService {
       );
     }
 
-    const result = await (this.prisma.user as any).update({ where: { id }, data });
+    const result = await (this.prisma.user as any).update({
+      where: { id },
+      data,
+    });
 
     this.logger.log(`User updated: ${result.email} (id=${result.id})`);
 
@@ -170,7 +173,6 @@ export class UserService {
       user: this.sanitiseUser(result),
     };
   }
-
 
   /**
    * Strips the password hash before sending user data to the client.

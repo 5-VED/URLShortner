@@ -13,10 +13,10 @@ import { UrlService } from './url.service';
 
 @Controller('url')
 export class UrlController {
-  constructor(private readonly urlService: UrlService) { }
+  constructor(private readonly urlService: UrlService) {}
 
   @Get('/:shortCode')
-  async getShortCode() { }
+  async getShortCode() {}
 
   // @Post('')
   // @HttpCode(HttpStatus.OK)
@@ -30,4 +30,3 @@ export class UrlController {
   //   }
   // }
 }
-

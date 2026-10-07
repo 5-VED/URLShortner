@@ -11,7 +11,6 @@ import {
 import { Transform } from 'class-transformer';
 import { RoleType } from '../../../common/enums/role.enum';
 
-
 export class CreateUserDto {
   @IsString()
   @IsNotEmpty({ message: 'Name is required' })
@@ -52,4 +51,3 @@ export class CreateUserDto {
   @IsString()
   profilePic?: string;
 }
-

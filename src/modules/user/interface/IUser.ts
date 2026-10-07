@@ -14,5 +14,4 @@ export interface IUser {
 }
 
 /** Publicly safe user shape — omits the password hash */
-export type PublicUser = Omit<IUser, "password">;
-
+export type PublicUser = Omit<IUser, 'password'>;

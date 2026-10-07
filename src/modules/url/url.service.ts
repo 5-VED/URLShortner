@@ -9,7 +9,5 @@ const generateShortCode = customAlphabet(
 
 @Injectable()
 export class UrlService {
-
-  constructor(private readonly prisma: PrismaService) { }
-
+  constructor(private readonly prisma: PrismaService) {}
 }
