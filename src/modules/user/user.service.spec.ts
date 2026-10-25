@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserService } from './user.service';
 import { PrismaService } from '../../datasource/postgres/postgres.service';
-import { TokenService } from '../auth/token.service';
 import { SessionService } from '../session/session.service';
 
 describe('UserService', () => {
@@ -20,14 +19,6 @@ describe('UserService', () => {
               update: jest.fn(),
               delete: jest.fn(),
             },
-          },
-        },
-        {
-          provide: TokenService,
-          useValue: {
-            generateAccessToken: jest.fn(),
-            generateRefreshToken: jest.fn(),
-            hashToken: jest.fn(),
           },
         },
         {

@@ -1,17 +1,17 @@
 model Session {
-  id           String    @id @default(uuid())
-  userId       String
-  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id     String @id @default(uuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  tokenHash    String    @unique   // hash of the refresh/session token, never the raw token
-  userAgent    String?
-  ipAddress    String?
+  tokenHash String  @unique // hash of the refresh/session token, never the raw token
+  userAgent String?
+  ipAddress String?
 
-  isRevoked    Boolean   @default(false)
-  revokedAt    DateTime?
-  expiresAt    DateTime
-  lastUsedAt   DateTime  @default(now())
-  createdAt    DateTime  @default(now())
+  isRevoked  Boolean   @default(false)
+  revokedAt  DateTime?
+  expiresAt  DateTime
+  lastUsedAt DateTime  @default(now())
+  createdAt  DateTime  @default(now())
 
   @@index([userId])
   @@index([expiresAt])

@@ -7,7 +7,6 @@ import { PostgresModule } from './datasource/postgres/postgres.module';
 import { UserModule } from './modules/user/user.module';
 import { UrlModule } from './modules/url/url.module';
 import { SessionModule } from './modules/session/session.module';
-import { AuthModule } from './modules/auth/auth.module';
 import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
@@ -27,9 +26,8 @@ import { ThrottlerModule } from '@nestjs/throttler';
     UrlModule,
     UserModule,
     SessionModule,
-    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
