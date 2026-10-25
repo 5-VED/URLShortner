@@ -1,20 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../datasource/postgres/postgres.service';
-
-export interface CreateSessionDto {
-  userId: string;
-  tokenHash: string;
-  expiresAt: Date;
-  userAgent?: string | null;
-  ipAddress?: string | null;
-}
+import { CreateSessionDto } from './Interface/ISession';
 
 @Injectable()
 export class SessionService {
   constructor(private readonly prisma: PrismaService) {}
 
   async createSession(dto: CreateSessionDto) {
-    return (this.prisma as any).session.create({
+    return this.prisma.session.create({
       data: {
         userId: dto.userId,
         tokenHash: dto.tokenHash,
