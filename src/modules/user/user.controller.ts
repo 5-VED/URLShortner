@@ -9,7 +9,12 @@ import {
   Post,
   Put,
   Query,
+  Req,
+  Res,
+  UseGuards,
 } from '@nestjs/common';
+import type { Request, Response } from 'express';
+import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginDto } from './dto/login-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -27,10 +32,32 @@ export class UserController {
     return this.userService.signUp(createUserDto);
   }
 
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
+  @UseGuards(ThrottlerGuard)
   @Post('login')
   @HttpCode(HttpStatus.OK)
-  async login(@Body() loginDto: LoginDto) {
-    return this.userService.login(loginDto);
+  async login(
+    @Body() loginDto: LoginDto,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    const { user, accessToken, refreshToken } = await this.userService.login(
+      loginDto,
+      {
+        userAgent: req.headers['user-agent'],
+        ipAddress: req.ip,
+      },
+    );
+
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      path: '/login',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    return { user, accessToken };
   }
 
   @Put(':id')

@@ -18,15 +18,13 @@ export class UrlController {
   @Get('/:shortCode')
   async getShortCode() {}
 
-  // @Post('')
-  // @HttpCode(HttpStatus.OK)
-  // async createShortCode(
-  //   @Body() createShortUrl: CreateUrlDto,
-  // ) {
-  //   try {
-  //     return await this.urlService.addShortCode(createShortUrl, userId);
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  // }
+  @Post('')
+  @HttpCode(HttpStatus.OK)
+  async createShortCode(@Body() createShortUrl: CreateUrlDto) {
+    try {
+      return await this.urlService.addShortCode(createShortUrl, userId);
+    } catch (error) {
+      throw error;
+    }
+  }
 }

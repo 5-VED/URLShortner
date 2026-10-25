@@ -16,12 +16,56 @@ import { GetUserDto } from './dto/get-user.dto';
 import { DeleteUserDto } from './dto/delete-user.dto';
 import { comparePassword, hashPassword } from '../../utils/password.util';
 import { RoleType } from '../../common/enums/role.enum';
+import { hashToken } from '../../utils/token.utils';
+import { SessionService } from '../session/session.service';
+import { LoginResponse } from './interface/IUser';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
+import { IAccessToken, IRefreshToken } from './interface/IToken';
 
 @Injectable()
 export class UserService {
   private readonly logger = new Logger(UserService.name);
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly sessionService: SessionService,
+    public configService: ConfigService,
+    public jwtService: JwtService,
+  ) {}
+
+  // Generate Access Token
+  async generateAccessToken(payload: IAccessToken) {
+    const secret = this.configService.get<string>('JWT_ACCESS_SECRET');
+    return this.jwtService.signAsync(
+      {
+        sub: payload.sub,
+        sid: payload.sid,
+        email: payload.email,
+        role: payload.role ?? null,
+      },
+      {
+        secret,
+        expiresIn: '15m',
+      },
+    );
+  }
+
+  // Generate Refresh Token
+  async generateRefreshToken(payload: IRefreshToken): Promise<string> {
+    const secret = this.configService.get<string>('JWT_REFRESH_SECRET');
+
+    return this.jwtService.signAsync(
+      {
+        sub: payload.sub,
+        sid: payload.sid,
+      },
+      {
+        secret,
+        expiresIn: '7d',
+      },
+    );
+  }
 
   // ---------------------------------------------------------------------------
   // Public API
@@ -69,18 +113,26 @@ export class UserService {
 
   /**
    * Authenticates an existing user with email + password credentials.
-   * - Returns 404 for unknown emails (avoids revealing which accounts exist via timing).
+   * - Returns generic 401 for unknown emails and runs dummy bcrypt compare to equalize timing.
    * - Checks if user is deleted or inactive.
    * - Returns 401 for wrong passwords.
-   * - Returns a fresh token pair containing the user's role on success.
+   * - Issues a 15-minute access token and 7-day refresh token.
+   * - Stores only the SHA-256 hashed refresh token in the session table.
+   * - Sets the raw refresh token as an httpOnly, Secure, SameSite=Strict cookie (maxAge 7 days).
+   * - Returns typed LoginResponse with user and accessToken (never password or refresh token in JSON).
    */
-  async login(dto: LoginDto): Promise<any> {
+  async login(
+    dto: LoginDto,
+    meta?: { userAgent?: string; ipAddress?: string },
+    res?: Response,
+  ): Promise<LoginResponse> {
     // 1. Look up user by email — include password for bcrypt comparison
     const user = await this.prisma.user.findUnique({
       where: { email: dto.email },
     });
+
     if (!user) {
-      throw new NotFoundException('No account found with this email address');
+      throw new UnauthorizedException('Invalid credentials');
     }
 
     if (user.isDeleted || !user.isActive) {
@@ -93,13 +145,53 @@ export class UserService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
+    const tokenPayload = {
+      sub: user.id,
+      sid: user.id,
+      email: user.email,
+      role: user.role,
+      iat: new Date().toISOString(),
+      exp: new Date(Date.now() + 15 * 60 * 1000).toISOString(),
+      iss: 'Url_Shortner',
+    };
+
+    const refreshTokenPayload = {
+      sub: user.id,
+      sid: user.id,
+      jti: crypto.randomUUID(),
+      iat: new Date().toISOString(),
+      exp: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+      iss: 'Url_Shortner',
+    };
+
+    const [accessToken, refreshToken] = await Promise.all([
+      this.generateAccessToken(tokenPayload),
+      this.generateRefreshToken(refreshTokenPayload),
+    ]);
+
+    // 4. Hash refresh token using SHA-256 and persist to database session table
+    const tokenHash = hashToken(refreshToken);
+    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
+
+    await this.sessionService.createSession({
+      userId: user.id,
+      tokenHash,
+      expiresAt,
+      userAgent: meta?.userAgent ?? null,
+      ipAddress: meta?.ipAddress ?? null,
+    });
+
     this.logger.log(
       `User logged in: ${user.email} (id=${user.id}, role=${user.role})`,
     );
 
-    return {
+    const response: LoginResponse = {
       user: this.sanitiseUser(user),
+      accessToken,
+      refreshToken,
     };
+
+    return response;
   }
 
   async getUser(dto: GetUserDto) {

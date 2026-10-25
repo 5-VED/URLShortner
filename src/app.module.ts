@@ -6,6 +6,9 @@ import { ConfigModule } from '@nestjs/config';
 import { PostgresModule } from './datasource/postgres/postgres.module';
 import { UserModule } from './modules/user/user.module';
 import { UrlModule } from './modules/url/url.module';
+import { SessionModule } from './modules/session/session.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
@@ -13,10 +16,18 @@ import { UrlModule } from './modules/url/url.module';
       isGlobal: true,
       envFilePath: '.env',
     }),
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60000,
+        limit: 10,
+      },
+    ]),
     RedisModule,
     PostgresModule,
     UrlModule,
     UserModule,
+    SessionModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
