@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { RedisModule } from './datasource/redis/redis.module';
+// import { RedisModule } from './datasource/redis/redis.module';
 import { ConfigModule } from '@nestjs/config';
 import { PostgresModule } from './datasource/postgres/postgres.module';
 import { UserModule } from './modules/user/user.module';
@@ -21,7 +21,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
         limit: 10,
       },
     ]),
-    RedisModule,
+    // RedisModule,
     PostgresModule,
     UrlModule,
     UserModule,

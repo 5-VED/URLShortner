@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import helmet from 'helmet';
+import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -12,6 +13,14 @@ async function bootstrap() {
       contentSecurityPolicy: false,
     }),
   );
+  // ------------------------------------------------
+  // app.use(cookieParser()); // needed to read the refresh token cookie later
+
+  app.enableCors({
+    origin: (process.env.CORS_ORIGINS ?? 'http://localhost:5173').split(','),
+    credentials: true,
+  });
+
   // ------------------------------------------------
 
   // ----------- Swagger Configuration ---------------
