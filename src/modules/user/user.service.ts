@@ -10,7 +10,6 @@ import type { User } from '../../../prisma/generated/prisma/client';
 import { PrismaService } from '../../datasource/postgres/postgres.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginDto } from './dto/login-user.dto';
-
 import { UpdateUserDto } from './dto/update-user.dto';
 import { GetUserDto } from './dto/get-user.dto';
 import { DeleteUserDto } from './dto/delete-user.dto';
@@ -108,6 +107,9 @@ export class UserService {
 
     return {
       user: this.sanitiseUser(user),
+      success: true,
+      statusCode: 200,
+      message: 'Signup successfull',
     };
   }
 
@@ -124,7 +126,6 @@ export class UserService {
   async login(
     dto: LoginDto,
     meta?: { userAgent?: string; ipAddress?: string },
-    res?: Response,
   ): Promise<LoginResponse> {
     // 1. Look up user by email — include password for bcrypt comparison
     const user = await this.prisma.user.findUnique({
@@ -250,7 +251,7 @@ export class UserService {
       );
     }
 
-    const result = await (this.prisma.user as any).update({
+    const result = await this.prisma.user.update({
       where: { id },
       data,
     });

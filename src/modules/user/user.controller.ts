@@ -21,6 +21,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { DeleteUserDto } from './dto/delete-user.dto';
 import { UserService } from './user.service';
 import { GetUserDto } from './dto/get-user.dto';
+import { SignupResponse } from './interface/IUser';
 
 @Controller('user')
 export class UserController {
@@ -57,7 +58,9 @@ export class UserController {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    return { user, accessToken };
+    return res
+      .status(HttpStatus.OK)
+      .json({ data: { user, accessToken }, success: true, stausCode: 200 });
   }
 
   @Put(':id')

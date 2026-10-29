@@ -21,3 +21,6 @@ export interface LoginResponse {
   accessToken: string;
   refreshToken: string;
 }
+export interface SignupResponse {
+  user: PublicUser;
+}
